@@ -34,7 +34,7 @@ func (b Build) All() error {
 
 // Proxywasm builds all the proxy-wasm tests
 func (Build) Proxywasm() error {
-	command := exec.Command("tinygo", "build", "-o", "main.wasm", "-scheduler=none", "-target=wasi")
+	command := exec.Command("tinygo", "build", "-o", "main.wasm", "-scheduler=none", "--no-debug", "-target=wasi")
 	err := walkAndBuild(proxyWasmSuffix, command)
 	if err != nil {
 		fmt.Printf("Error walking directory: %v\n", err)
@@ -44,7 +44,11 @@ func (Build) Proxywasm() error {
 
 // Httpwasm builds all the http-wasm tests
 func (Build) Httpwasm() error {
-	// TODO
+	command := exec.Command("tinygo", "build", "-o", "main.wasm", "-scheduler=none", "--no-debug", "-target=wasi")
+	err := walkAndBuild(httpWasmSuffix, command)
+	if err != nil {
+		fmt.Printf("Error walking directory: %v\n", err)
+	}
 	return nil
 }
 
@@ -99,7 +103,7 @@ func Run(testName string) error {
 	// Spin up envoy with the correct config file and binary
 	configPath := filepath.Join(testsDir, test.name, testName, "envoy.yaml")
 
-	cmd := exec.Command(binaryPath, "-c", configPath, "--service-cluster", test.suffix+"envoy", "--service-node", test.suffix+"envoy")
+	cmd := exec.Command(binaryPath, "-c", configPath, "--service-cluster", "envoy"+test.suffix, "--service-node", "envoy"+test.suffix)
 	if err := cmd.Start(); err != nil {
 		return fmt.Errorf("failed to start envoy: %v", err)
 	}

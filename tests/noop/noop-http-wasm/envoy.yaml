@@ -23,21 +23,20 @@ static_resources:
                           route:
                             cluster: local_server
                 http_filters:
-                  - name: envoy.filters.http.httpwasm
+                  - name: envoy.filters.http.wasm
                     typed_config:
-                      "@type": type.googleapis.com/envoy.extensions.filters.http.http_wasm.v3.GuestConfig
-                      name: "httpwasm-filter"
-                      #max_request_bytes: 5242880
-                      # configuration:
-                      #   "@type": "type.googleapis.com/google.protobuf.StringValue"
-                      #   value: {}
-                      code:
-                        local:
-                          filename: "./main.wasm"
+                      "@type": type.googleapis.com/udpa.type.v1.TypedStruct
+                      type_url: type.googleapis.com/envoy.extensions.filters.http.wasm.v3.Wasm
+                      value:
+                        config:
+                          vm_config:
+                            runtime: "envoy.wasm.runtime.v8"
+                            code:
+                              local:
+                                filename: ".main.wasm"
                   - name: envoy.filters.http.router
                     typed_config:
                       "@type": type.googleapis.com/envoy.extensions.filters.http.router.v3.Router
-
   clusters:
     - name: local_server
       connect_timeout: 6000s

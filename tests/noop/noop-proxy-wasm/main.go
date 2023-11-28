@@ -28,3 +28,7 @@ func (ctx *noop) OnPluginStart(pluginConfigurationSize int) types.OnPluginStartS
 }
 
 func (*noop) NewHttpContext(uint32) types.HttpContext { return &types.DefaultHttpContext{} }
+
+func (ctx *noop) OnHttpRequestHeaders(int, bool) types.Action {
+	return types.ActionContinue
+}

@@ -1,9 +1,12 @@
-Envoy latency, CPU and memory comparions between proxy-wasm and http-wasm filters.
+Latency, CPU and memory consumption comparions between proxy-wasm and http-wasm filters in Envoy proxy.
 
 ## Benchmarks
-WIP
+Following benchmarks have been run on a [TODO] with:
+- Go: `1.20.7`
+- Tinygo: `0.30.0`
 
 ## Getting started
+`go run mage.go -l` lists all the available commands:
 ```bash
 ▶ mage -l
 Targets:
@@ -33,7 +36,6 @@ git checkout v1.27.0
 mv /tmp/envoy-docker-build/envoy/x64/source/exe/envoy/envoy ~/Repo/wasm-envoy-perf-comp/envoybins/envoy-proxy-wasm
 
 # http-wasm Envoy
-# TODO: add instructions
 gh repo clone vikaschoudhary16/envoy
 cd envoy
 git checkout d869351dc9a6b4b1badcb986f4de46af734e8057 # For the latest commit checkout http-wasm branch
@@ -42,11 +44,11 @@ mv /tmp/envoy-docker-build/envoy/x64/source/exe/envoy/envoy ~/Repo/wasm-envoy-pe
 ```
 
 It is also possible to get them from the docker images:
-- envoy-proxy-wasm: `envoyproxy/envoy:v1.27.0`
-- envoy-http-wasm: ... # TODO build and push the image
+- **envoy-proxy-wasm**: `envoyproxy/envoy:v1.27.0`
+- **envoy-http-wasm**: ... # TODO build and push the image
 The envoy binary is located at `/usr/local/bin/envoy` in the docker image.
 
-3. Spin up observability tools. a Grafana dashboard is provided to visualize memory and cpu usage. Requires docker-compose
+3. Spin up observability tools. a Grafana dashboard is provided to visualize memory and cpu usage. It requires docker-compose
 ```bash
 mage runObservability # Access the dashboard via: http://localhost:3000. Default login: admin/admin
 # When done, tear down the observability tools:
@@ -61,3 +63,13 @@ go run github.com/mccutchen/go-httpbin/v2/cmd/go-httpbin@v2.9.0 -port 8080
 1. Run `mage run <testName>`.
 2. Monitor  the output of the test for latency outputs.
 3. Monitor the Grafana dashboard to see the memory and cpu usage of the Envoy process.
+
+## TODOS:
+- Add tests:
+    - nowasm
+    - helloworld
+    - header manipulation
+    - big body not used by the filter
+    - body manipulation (we need the whole body)
+    - response
+- Add CPU with prometheus/node_exporter
