@@ -16,8 +16,8 @@ import (
 var Default = Build.All
 
 var testsDir = "./tests"
-var proxyWasmSuffix = "-proxy-wasm"
-var httpWasmSuffix = "-http-wasm"
+var proxyWasmSuffix = "proxy-wasm"
+var httpWasmSuffix = "http-wasm"
 
 var proxyWasmBinaryPath = "./envoybins/envoy-proxy-wasm"
 var httpWasmBinaryPath = "./envoybins/envoy-http-wasm"
@@ -86,7 +86,7 @@ func Run(testName string) error {
 	// Split the testName into name and suffix
 	split := strings.SplitN(testName, "-", 2)
 	if len(split) != 2 {
-		return fmt.Errorf("invalid test name: %s. Expected name: <testname>[-proxy-wasm|-http-wasm]", testName)
+		return fmt.Errorf("invalid test name: %q. Expected name: <testname>[-proxy-wasm|-http-wasm]", testName)
 	}
 	test := Test{split[0], split[1]}
 
@@ -97,7 +97,7 @@ func Run(testName string) error {
 	} else if test.suffix == httpWasmSuffix {
 		binaryPath = httpWasmBinaryPath
 	} else {
-		return fmt.Errorf("invalid test name: %s. Expected name: <testname>[-proxy-wasm|-http-wasm]", testName)
+		return fmt.Errorf("invalid test name: %q. Expected name: <testname>[-proxy-wasm|-http-wasm]", testName)
 	}
 
 	// Spin up envoy with the correct config file and binary
