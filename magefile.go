@@ -114,7 +114,7 @@ func Run(testName string) error {
 		return fmt.Errorf("test name %s not found in testParamsMap", test.name)
 	}
 
-	testParams := append([]string{"run", "github.com/gonetx/httpit@latest"}, testParamsMap[test.name]...)
+	testParams := append([]string{"run", "go.k6.io/k6@v0.47.0"}, testParamsMap[test.name]...)
 	err := sh.RunV("go", testParams...)
 	if err != nil {
 		return fmt.Errorf("error running command %q: %v", testParams, err)
