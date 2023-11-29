@@ -76,32 +76,52 @@ func walkAndBuild(suffix string, buildCommand *exec.Cmd) error {
 }
 
 type Test struct {
-	name   string
-	suffix string
+	name     string // e.g. noop
+	suffix   string // e.g. http-wasm
+	fullName string // e.g. noop-http-wasm
 }
 
 // Run runs a test - Usage: run <testName>
 func Run(testName string) error {
 
+	var tests []Test
+
 	// Split the testName into name and suffix
 	split := strings.SplitN(testName, "-", 2)
 	if len(split) != 2 {
-		return fmt.Errorf("invalid test name: %q. Expected name: <testname>[-proxy-wasm|-http-wasm]", testName)
-	}
-	test := Test{split[0], split[1]}
-
-	// Depending on the suffix, we select the correct envoy binary
-	var binaryPath string
-	if test.suffix == proxyWasmSuffix {
-		binaryPath = proxyWasmBinaryPath
-	} else if test.suffix == httpWasmSuffix {
-		binaryPath = httpWasmBinaryPath
+		tests = append(tests, Test{testName, proxyWasmSuffix, testName + "-" + proxyWasmSuffix})
+		tests = append(tests, Test{testName, httpWasmSuffix, testName + "-" + httpWasmSuffix})
 	} else {
-		return fmt.Errorf("invalid test name: %q. Expected name: <testname>[-proxy-wasm|-http-wasm]", testName)
+		tests = append(tests, Test{split[0], split[1], testName})
 	}
 
+	// iteration on tests that are going to be run.
+	for _, test := range tests {
+
+		if _, ok := testParamsMap[test.name]; !ok {
+			return fmt.Errorf("test name %s not found. Expected name: <testname>[-proxy-wasm|-http-wasm]", test.name)
+		}
+
+		// Depending on the suffix, we select the correct envoy binary
+		var binaryPath string
+		if test.suffix == proxyWasmSuffix {
+			binaryPath = proxyWasmBinaryPath
+		} else if test.suffix == httpWasmSuffix {
+			binaryPath = httpWasmBinaryPath
+		} else {
+			return fmt.Errorf("invalid test name: %q. Expected name: <testname>[-proxy-wasm|-http-wasm]", testName)
+		}
+		if err := doRun(binaryPath, test); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func doRun(binaryPath string, test Test) error {
 	// Spin up envoy with the correct config file and binary
-	configPath := filepath.Join(testsDir, test.name, testName, "envoy.yaml")
+	fmt.Printf("⚙️  Running %s...\n", test.fullName)
+	configPath := filepath.Join(testsDir, test.name, test.fullName, "envoy.yaml")
 
 	cmd := exec.Command(binaryPath, "-c", configPath, "--service-cluster", "envoy"+test.suffix, "--service-node", "envoy"+test.suffix)
 	if err := cmd.Start(); err != nil {
