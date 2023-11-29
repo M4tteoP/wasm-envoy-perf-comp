@@ -66,7 +66,6 @@ go run github.com/mccutchen/go-httpbin/v2/cmd/go-httpbin@v2.9.0 -port 8080
 
 ## TODOS:
 - Add tests:
-    - nowasm
     - helloworld
     - header manipulation
     - big body not used by the filter
