@@ -122,8 +122,7 @@ func doRun(binaryPath string, test Test) error {
 	// Spin up envoy with the correct config file and binary
 	fmt.Printf("⚙️  Running %s...\n", test.fullName)
 	configPath := filepath.Join(testsDir, test.name, test.fullName, "envoy.yaml")
-
-	cmd := exec.Command(binaryPath, "-c", configPath, "--service-cluster", "envoy"+test.suffix, "--service-node", "envoy"+test.suffix)
+	cmd := exec.Command(binaryPath, "-c", configPath, "--service-cluster", "envoy-"+test.suffix, "--service-node", "envoy-"+test.suffix)
 	if err := cmd.Start(); err != nil {
 		return fmt.Errorf("failed to start envoy: %v", err)
 	}
