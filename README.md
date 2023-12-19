@@ -54,9 +54,9 @@ mage runObservability # Access the dashboard via: http://localhost:3000. Default
 # When done, tear down the observability tools:
 mage teardownObservability
 ```
-4. Run a backend service listening on port 8080
+4. Run a backend service listening on port 8000
 ```bash
-go run github.com/mccutchen/go-httpbin/v2/cmd/go-httpbin@v2.9.0 -port 8080
+go run github.com/mccutchen/go-httpbin/v2/cmd/go-httpbin@v2.9.0 -port 8000
 ```
 
 ## Running a test

@@ -7,9 +7,9 @@ export const options = {
         executor: 'constant-arrival-rate',
         rate: __ENV.RATE,
         timeUnit: '1s', // RATE iterations per second
-        duration: '300s',
-        preAllocatedVUs: 300, // how large the initial pool of VUs would be
-        maxVUs: 500, // if the preAllocatedVUs are not enough, we can initialize more
+        duration: '180s',
+        preAllocatedVUs: 100, // how large the initial pool of VUs would be
+        maxVUs: 200, // if the preAllocatedVUs are not enough, we can initialize more
       },
     },
   };

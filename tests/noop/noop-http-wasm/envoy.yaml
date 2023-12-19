@@ -27,13 +27,13 @@ static_resources:
                     typed_config:
                       "@type": type.googleapis.com/envoy.extensions.filters.http.http_wasm.v3.GuestConfig
                       name: "httpwasm-filter"
-                      #max_request_bytes: 5242880
+                      max_request_bytes: 52428800
                       # configuration:
                       #   "@type": "type.googleapis.com/google.protobuf.StringValue"
                       #   value: {}
                       code:
                         local:
-                          filename: "./main.wasm"
+                          filename: "./tests/noop/noop-http-wasm/main.wasm"
                   - name: envoy.filters.http.router
                     typed_config:
                       "@type": type.googleapis.com/envoy.extensions.filters.http.router.v3.Router
@@ -50,7 +50,7 @@ static_resources:
               - endpoint:
                   address:
                     socket_address:
-                      address: httpbin
+                      address: localhost
                       port_value: 8000
 
 admin:
