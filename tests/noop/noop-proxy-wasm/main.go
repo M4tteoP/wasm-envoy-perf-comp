@@ -21,14 +21,18 @@ type noop struct {
 	types.DefaultPluginContext
 }
 
+type httpContext struct {
+	types.DefaultHttpContext
+}
+
 // Override types.DefaultPluginContext.
 func (ctx *noop) OnPluginStart(pluginConfigurationSize int) types.OnPluginStartStatus {
 	proxywasm.LogInfo("OnPluginStart called")
 	return types.OnPluginStartStatusOK
 }
 
-func (*noop) NewHttpContext(uint32) types.HttpContext { return &types.DefaultHttpContext{} }
+func (*noop) NewHttpContext(uint32) types.HttpContext { return &httpContext{} }
 
-func (ctx *noop) OnHttpRequestHeaders(int, bool) types.Action {
+func (ctx *httpContext) OnHttpRequestHeaders(int, bool) types.Action {
 	return types.ActionContinue
 }

@@ -64,9 +64,9 @@ func walkAndBuild(suffix string, buildCommand *exec.Cmd) error {
 				cmd.Dir = filepath.Dir(mainGoPath)
 
 				fmt.Printf("Building %s...\n", mainGoPath)
-				err := cmd.Run()
+				output, err := cmd.CombinedOutput()
 				if err != nil {
-					return fmt.Errorf("Error building %s: %v\n", mainGoPath, err)
+					return fmt.Errorf("Error building %s: %v\nBuild output:\n%s\n", mainGoPath, err, output)
 				}
 			}
 		}

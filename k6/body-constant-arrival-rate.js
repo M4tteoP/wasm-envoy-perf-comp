@@ -1,0 +1,35 @@
+import http from 'k6/http';
+import { textSummary } from 'https://jslib.k6.io/k6-summary/0.0.2/index.js';
+
+export const options = {
+    scenarios: {
+      constant_request_rate: {
+        executor: 'constant-arrival-rate',
+        rate: __ENV.RATE,
+        timeUnit: '1s', // RATE iterations per second
+        duration: '180s',
+        preAllocatedVUs: 100, // how large the initial pool of VUs would be
+        maxVUs: 200, // if the preAllocatedVUs are not enough, we can initialize more
+      },
+    },
+  };
+
+export default function () {
+    let body = "this is a random text, and it contains the payload word"
+    http.post(__ENV.URL, body, {
+      headers: { 'Content-Type': 'text/plain' },
+    });
+}
+
+// https://k6.io/docs/using-k6/metrics/reference/
+// https://k6.io/docs/results-output/end-of-test/custom-summary/
+export function handleSummary(data) {
+  delete data.metrics['http_req_duration{expected_response:true}'];
+  delete data.metrics['http_req_tls_handshaking'];
+  delete data.metrics['iterations'];
+  delete data.metrics['vus'];
+
+  return {
+    stdout: textSummary(data, {enableColors: true }),
+  };
+}
